@@ -17,10 +17,10 @@ def handle_add(service: TodoService, title: str) -> int:
     """
     try:
         todo = service.add_todo(title)
-        print(f'✓ Added todo #{todo.id}: "{todo.title}"')
+        print(f'[+] Added todo #{todo.id}: "{todo.title}"')
         return 0
     except ValidationError as e:
-        print(f"✗ Error: {e.message}", file=sys.stderr)
+        print(f"[!] Error: {e.message}", file=sys.stderr)
         return 1
 
 
@@ -62,10 +62,10 @@ def handle_complete(service: TodoService, todo_id: int) -> int:
     try:
         todo = service.complete_todo(todo_id)
         if todo.completed:
-            print(f'✓ Marked todo #{todo.id} as complete: "{todo.title}"')
+            print(f'[+] Marked todo #{todo.id} as complete: "{todo.title}"')
         return 0
     except TodoNotFoundError as e:
-        print(f"✗ Error: {e}", file=sys.stderr)
+        print(f"[!] Error: {e}", file=sys.stderr)
         return 1
 
 
@@ -82,13 +82,13 @@ def handle_update(service: TodoService, todo_id: int, title: str) -> int:
     """
     try:
         todo = service.update_todo(todo_id, title)
-        print(f'✓ Updated todo #{todo.id}: "{todo.title}"')
+        print(f'[+] Updated todo #{todo.id}: "{todo.title}"')
         return 0
     except TodoNotFoundError as e:
-        print(f"✗ Error: {e}", file=sys.stderr)
+        print(f"[!] Error: {e}", file=sys.stderr)
         return 1
     except ValidationError as e:
-        print(f"✗ Error: {e.message}", file=sys.stderr)
+        print(f"[!] Error: {e.message}", file=sys.stderr)
         return 1
 
 
@@ -104,8 +104,8 @@ def handle_delete(service: TodoService, todo_id: int) -> int:
     """
     try:
         service.delete_todo(todo_id)
-        print(f"✓ Deleted todo #{todo_id}")
+        print(f"[+] Deleted todo #{todo_id}")
         return 0
     except TodoNotFoundError as e:
-        print(f"✗ Error: {e}", file=sys.stderr)
+        print(f"[!] Error: {e}", file=sys.stderr)
         return 1

@@ -34,7 +34,7 @@ class TestAddCommand:
             exit_code = handle_add(service, "Buy groceries")
 
         assert exit_code == 0
-        assert "Added todo #1" in stdout.getvalue()
+        assert "[+] Added todo #1" in stdout.getvalue()
         assert "Buy groceries" in stdout.getvalue()
 
     def test_add_command_empty_title(self, service: TodoService) -> None:
@@ -87,7 +87,7 @@ class TestCompleteCommand:
             exit_code = handle_complete(service, todo.id)
 
         assert exit_code == 0
-        assert "Marked todo #1 as complete" in stdout.getvalue()
+        assert "[+] Marked todo #1 as complete" in stdout.getvalue()
 
     def test_complete_command_not_found(self, service: TodoService) -> None:
         """Test completing a non-existent todo."""
@@ -111,7 +111,7 @@ class TestUpdateCommand:
             exit_code = handle_update(service, todo.id, "Updated")
 
         assert exit_code == 0
-        assert "Updated todo #1" in stdout.getvalue()
+        assert "[+] Updated todo #1" in stdout.getvalue()
 
     def test_update_command_not_found(self, service: TodoService) -> None:
         """Test updating a non-existent todo."""
@@ -146,7 +146,7 @@ class TestDeleteCommand:
             exit_code = handle_delete(service, todo.id)
 
         assert exit_code == 0
-        assert "Deleted todo #1" in stdout.getvalue()
+        assert "[+] Deleted todo #1" in stdout.getvalue()
 
     def test_delete_command_not_found(self, service: TodoService) -> None:
         """Test deleting a non-existent todo."""
