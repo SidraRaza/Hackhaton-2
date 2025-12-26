@@ -50,3 +50,6 @@ Thumbs.db
 .env
 .env.local
 *.log
+
+# Application data
+todos.json

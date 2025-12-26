@@ -1,15 +1,17 @@
 """Unit tests for TodoService."""
 
 import pytest
+from pathlib import Path
 from src.services.todo_service import TodoService
 from src.store.memory_store import TodoStore
 from src.models.exceptions import TodoNotFoundError, ValidationError
 
 
 @pytest.fixture
-def service() -> TodoService:
-    """Create a fresh TodoService for each test."""
-    store = TodoStore()
+def service(tmp_path: Path) -> TodoService:
+    """Create a fresh TodoService with temporary storage for each test."""
+    file_path = tmp_path / "test_todos.json"
+    store = TodoStore(file_path=file_path)
     return TodoService(store)
 
 

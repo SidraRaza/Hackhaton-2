@@ -2,7 +2,7 @@
 
 import pytest
 from io import StringIO
-import sys
+from pathlib import Path
 from contextlib import redirect_stdout, redirect_stderr
 
 from src.main import main, create_parser
@@ -18,9 +18,10 @@ from src.cli.commands import (
 
 
 @pytest.fixture
-def service() -> TodoService:
-    """Create a fresh TodoService for each test."""
-    store = TodoStore()
+def service(tmp_path: Path) -> TodoService:
+    """Create a fresh TodoService with temporary storage for each test."""
+    file_path = tmp_path / "test_todos.json"
+    store = TodoStore(file_path=file_path)
     return TodoService(store)
 
 
