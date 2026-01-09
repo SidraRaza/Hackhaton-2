@@ -13,6 +13,7 @@ Define reusable UI components for the Hackathon II Todo App using Next.js App Ro
 - `@specs/features/task-crud.md` - Task UI requirements
 - `@specs/features/authentication.md` - Auth UI requirements
 - `@specs/ui/pages.md` - Component composition
+- `@specs/ui/enhancements.md` - UI improvements and enhancements
 - `@specs/api/rest-endpoints.md` - Data binding requirements
 
 ---

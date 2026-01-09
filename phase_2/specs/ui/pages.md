@@ -13,6 +13,7 @@ Define the page structure and layout for the Hackathon II Todo App using Next.js
 - `@specs/features/task-crud.md` - Task page requirements
 - `@specs/features/authentication.md` - Auth page requirements
 - `@specs/ui/components.md` - Component composition
+- `@specs/ui/enhancements.md` - UI improvements and enhancements
 - `@specs/api/rest-endpoints.md` - Data fetching requirements
 
 ---

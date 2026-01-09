@@ -62,6 +62,7 @@ Transform the console-based Todo application into a multi-user web application w
 | Database | `@specs/database/schema.md` | Data models and schema |
 | UI | `@specs/ui/components.md` | Reusable components |
 | UI | `@specs/ui/pages.md` | Page definitions |
+| UI | `@specs/ui/enhancements.md` | UI improvements and enhancements |
 
 ## Phase II Acceptance Criteria
 
