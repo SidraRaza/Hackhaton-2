@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useAuth } from './auth';
+import toast from 'react-hot-toast';
 
 interface Task {
   id: string;
@@ -97,9 +98,13 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     if (response.ok) {
       const newTask = await response.json();
       setTasks(prev => [newTask, ...prev]);
+      toast.success('Task added successfully!');
+      return newTask;
     } else {
       const errorData = await response.json();
-      throw new Error(errorData.detail || 'Failed to add task');
+      const errorMessage = errorData.detail || 'Failed to add task';
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
@@ -117,10 +122,13 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     if (response.ok) {
       const updatedTask = await response.json();
       setTasks(prev => prev.map(task => task.id === id ? updatedTask : task));
+      toast.success('Task updated successfully!');
       return updatedTask;
     } else {
       const errorData = await response.json();
-      throw new Error(errorData.detail || 'Failed to update task');
+      const errorMessage = errorData.detail || 'Failed to update task';
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
@@ -135,9 +143,12 @@ export function TasksProvider({ children }: { children: ReactNode }) {
 
     if (response.ok) {
       setTasks(prev => prev.filter(task => task.id !== id));
+      toast.success('Task deleted successfully!');
     } else {
       const errorData = await response.json();
-      throw new Error(errorData.detail || 'Failed to delete task');
+      const errorMessage = errorData.detail || 'Failed to delete task';
+      toast.error(errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
