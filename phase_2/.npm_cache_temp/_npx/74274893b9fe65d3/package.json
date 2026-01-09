@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "neonctl": "^2.19.0"
+  },
+  "_npx": {
+    "packages": [
+      "neonctl"
+    ]
+  }
+}
