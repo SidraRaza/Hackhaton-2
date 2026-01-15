@@ -63,6 +63,7 @@ backend/yarn.lock
 # Logs
 logs
 *.log
+*.null
 
 # Runtime data
 pids
