@@ -1,0 +1,82 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/modules/
+.DS_Store
+.pytest_cache/
+.hypothesis/
+
+# Environment
+.env
+.env.local
+.env.dev
+.env.production
+.env.test
+
+# Database
+*.db
+*.db-journal
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Next.js
+.next/
+out/
+dist/
+build/
+
+# VSCode and other editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.tmp
+
+# Python virtual environment (if not already covered)
+backend/venv/
+backend/ENV/
+
+# Frontend lock files
+frontend/yarn.lock
+backend/yarn.lock
+
+# Logs
+logs
+*.log
+*.null
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output/
+
+# TypeScript cache
+*.tsbuildinfo
