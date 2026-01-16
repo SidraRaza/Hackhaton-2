@@ -1,72 +1,55 @@
-# hackathon-todo Constitution
-<!-- Full-Stack Todo App with Authentication -->
+# [PROJECT_NAME] Constitution
+<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
 
 ## Core Principles
 
-### I. Always Reference Specs
-<!-- All implementation must reference specs -->
-Code changes must be based on documented specifications; No implementation without corresponding spec updates; All architectural decisions must be recorded in specs before implementation begins.
+### [PRINCIPLE_1_NAME]
+<!-- Example: I. Library-First -->
+[PRINCIPLE_1_DESCRIPTION]
+<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
 
-### II. Never Modify Without Spec
-<!-- No code change without updating specs -->
-Any code modification requires an accompanying spec update; Feature additions must have spec documentation first; Bug fixes should update relevant spec sections to prevent regression.
+### [PRINCIPLE_2_NAME]
+<!-- Example: II. CLI Interface -->
+[PRINCIPLE_2_DESCRIPTION]
+<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
 
-### III. Maintain Layer Separation
-<!-- Frontend and backend layers are separate -->
-Frontend and backend must remain independent with clean API boundaries; Cross-layer dependencies should be minimized; Each layer has distinct responsibilities and technology stacks.
+### [PRINCIPLE_3_NAME]
+<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
+[PRINCIPLE_3_DESCRIPTION]
+<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
 
-### IV. Ensure Security
-<!-- JWT auth, user isolation, token expiry enforced -->
-Authentication implemented via JWT with Better Auth; User data isolation enforced at database level; Token expiry and security best practices must be followed.
+### [PRINCIPLE_4_NAME]
+<!-- Example: IV. Integration Testing -->
+[PRINCIPLE_4_DESCRIPTION]
+<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
 
-### V. Ensure Responsiveness
-<!-- Frontend must work on mobile and desktop -->
-UI must be responsive across device sizes; Mobile-first design approach encouraged; Performance considerations for various network speeds.
+### [PRINCIPLE_5_NAME]
+<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
+[PRINCIPLE_5_DESCRIPTION]
+<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
 
-### VI. Reuse Skills
-<!-- Agents must reuse skills for repetitive tasks -->
-Standardized skills should be leveraged for common operations; Avoid duplicating functionality across implementations; Skills should be maintained and improved for reusability.
+### [PRINCIPLE_6_NAME]
 
-### VII. Maintain Code Quality
-<!-- Follow coding standards, linting, type safety -->
-Type safety enforced with TypeScript and Python typing; Code linting and formatting standards applied; Proper error handling and validation implemented.
 
-## Additional Constraints
-<!-- Security, Performance, and Technology Requirements -->
+[PRINCIPLE__DESCRIPTION]
 
-Frontend: Next.js 16+, TypeScript, Tailwind CSS with responsive design;
-Backend: Python FastAPI server using SQLModel ORM and Neon PostgreSQL;
-Database: Neon Serverless PostgreSQL with user_id filtering for isolation;
-Authentication: JWT via Better Auth with 7-day token expiry;
-All API requests must include proper JWT authentication headers.
+## [SECTION_2_NAME]
+<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
 
-## Development Workflow
-<!-- Implementation Process, Testing, and Deployment -->
+[SECTION_2_CONTENT]
+<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
 
-Development Steps:
-1. Read specification thoroughly before implementation
-2. Break features into discrete, testable tasks
-3. Assign tasks to appropriate specialized agents
-4. Implement backend functionality first
-5. Implement frontend components and UI
-6. Write comprehensive unit and integration tests
-7. Test full feature functionality end-to-end
-8. Deploy to appropriate environment
+## [SECTION_3_NAME]
+<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
 
-Quality Assurance:
-- All endpoints must follow REST conventions
-- Input validation using Pydantic models
-- Proper HTTP status codes for all responses
-- Comprehensive error handling and logging
-- User isolation verified for all data operations
+[SECTION_3_CONTENT]
+<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
 
 ## Governance
-<!-- Constitution Authority and Amendment Process -->
+<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-This constitution governs all development activities for the hackathon-todo project;
-All agents must follow the specified architecture and technology constraints;
-Changes to constitution require explicit approval and documentation;
-Agent responsibilities must align with defined roles and tools;
-Skills must be reused consistently to maintain code quality and reduce duplication.
+[GOVERNANCE_RULES]
+<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
 
-**Version**: 1.0 | **Ratified**: 2026-01-15 | **Last Amended**: 2026-01-15
+**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
+<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->

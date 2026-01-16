@@ -66,8 +66,8 @@ description: "Task list for hackathon-todo feature implementation"
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T015 [P] [US1] Contract test for auth endpoints in backend/tests/test_auth.py
-- [ ] T016 [P] [US1] Integration test for user registration flow in backend/tests/test_auth.py
+- [x] T015 [P] [US1] Contract test for auth endpoints in backend/tests/test_auth.py
+- [x] T016 [P] [US1] Integration test for user registration flow in backend/tests/test_auth.py
 
 ### Implementation for User Story 1
 
@@ -94,8 +94,8 @@ description: "Task list for hackathon-todo feature implementation"
 
 ### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T027 [P] [US2] Contract test for task endpoints in backend/tests/test_tasks.py
-- [ ] T028 [P] [US2] Integration test for full task lifecycle in backend/tests/test_tasks.py
+- [x] T027 [P] [US2] Contract test for task endpoints in backend/tests/test_tasks.py
+- [x] T028 [P] [US2] Integration test for full task lifecycle in backend/tests/test_tasks.py
 
 ### Implementation for User Story 2
 
@@ -125,8 +125,8 @@ description: "Task list for hackathon-todo feature implementation"
 
 ### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T042 [P] [US3] Frontend integration tests for task management UI in frontend/tests/task.test.tsx
-- [ ] T043 [P] [US3] Frontend authentication flow tests in frontend/tests/auth.test.tsx
+- [x] T042 [P] [US3] Frontend integration tests for task management UI in frontend/tests/task.test.tsx
+- [x] T043 [P] [US3] Frontend authentication flow tests in frontend/tests/auth.test.tsx
 
 ### Implementation for User Story 3
 
@@ -152,8 +152,8 @@ description: "Task list for hackathon-todo feature implementation"
 
 ### Tests for User Story 4 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T053 [P] [US4] Security tests for user isolation in backend/tests/test_security.py
-- [ ] T054 [P] [US4] Performance tests for API endpoints in backend/tests/test_performance.py
+- [x] T053 [P] [US4] Security tests for user isolation in backend/tests/test_security.py
+- [x] T054 [P] [US4] Performance tests for API endpoints in backend/tests/test_performance.py
 
 ### Implementation for User Story 4
 
@@ -174,14 +174,14 @@ description: "Task list for hackathon-todo feature implementation"
 
 **Purpose**: Improvements that affect multiple user stories
 
-- [ ] T063 [P] Documentation updates in docs/
-- [ ] T064 Code cleanup and refactoring
-- [ ] T065 Performance optimization across all stories
+- [x] T063 [P] Documentation updates in docs/
+- [x] T064 Code cleanup and refactoring
+- [x] T065 Performance optimization across all stories
 - [ ] T066 [P] Additional unit tests (if requested) in backend/tests/ and frontend/tests/
-- [ ] T067 Security hardening
-- [ ] T068 Run quickstart.md validation
-- [ ] T069 Environment setup validation and documentation
-- [ ] T070 API documentation generation and validation
+- [x] T067 Security hardening
+- [x] T068 Run quickstart.md validation
+- [x] T069 Environment setup validation and documentation
+- [x] T070 API documentation generation and validation
 
 ---
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { signIn as betterSignIn, signOut as betterSignOut, useSession } from 'better-auth/react';
+import { signIn as betterSignIn, signOut as betterSignOut, useSession } from './better-auth-client';
 
 interface AuthContextType {
   user: any;

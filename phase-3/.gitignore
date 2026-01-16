@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+.npm_cache_temp/
 __pycache__/
 *.pyc
 *.pyo
@@ -26,6 +27,7 @@ coverage.xml
 # Environment
 .env
 .env.local
+.env.example
 .env.dev
 .env.production
 .env.test
