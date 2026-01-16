@@ -1,6 +1,6 @@
 'use client';
 
-import { useSession } from 'better-auth/react';
+import { useSession } from '../lib/better-auth-client';
 import AuthComponent from '../components/AuthComponent';
 import TaskList from '../components/TaskList';
 import { useAuth } from '../lib/auth';
@@ -38,7 +38,7 @@ export default function Home() {
             </div>
           </div>
 
-          <TaskList userId={session?.user?.id || 0} />
+          <TaskList userId={session?.user?.id ? Number(session.user.id) : 0} />
         </div>
       )}
     </div>

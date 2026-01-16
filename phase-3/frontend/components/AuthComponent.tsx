@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn, signOut, useSession } from 'better-auth/react';
+import { signIn, signOut, useSession } from '../lib/better-auth-client';
 
 interface AuthComponentProps {
   onAuthChange?: () => void;
@@ -21,31 +21,29 @@ export default function AuthComponent({ onAuthChange }: AuthComponentProps) {
     try {
       if (isLogin) {
         // Login
-        const result = await signIn('credentials', {
+        const result = await signIn({
           email,
           password,
-          redirect: false,
         });
 
         if (result?.error) {
           setError(result.error);
-        } else if (result?.token) {
-          localStorage.setItem('token', result.token);
+        } else if (result?.session) {
+          localStorage.setItem('token', result.session.token);
           onAuthChange?.();
         }
       } else {
         // Register - in a real app, you'd have a separate registration endpoint
         // For now, we'll just try to login to simulate registration flow
-        const result = await signIn('credentials', {
+        const result = await signIn({
           email,
           password,
-          redirect: false,
         });
 
         if (result?.error) {
           setError(result.error);
-        } else if (result?.token) {
-          localStorage.setItem('token', result.token);
+        } else if (result?.session) {
+          localStorage.setItem('token', result.session.token);
           onAuthChange?.();
         }
       }
