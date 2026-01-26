@@ -72,6 +72,7 @@ Before considering any component complete:
 - [ ] Responsive design implemented
 - [ ] Accessible (keyboard nav, ARIA, semantic HTML)
 - [ ] Follows @frontend/CLAUDE.md conventions
+- [ ] Verify dependencies are publicly available and don't cause build issues
 
 ## Decision Framework
 

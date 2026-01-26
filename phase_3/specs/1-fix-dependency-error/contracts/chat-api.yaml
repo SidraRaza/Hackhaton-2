@@ -1,0 +1,148 @@
+openapi: 3.0.0
+info:
+  title: Chat API
+  description: API for AI Task Assistant functionality
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Development server
+paths:
+  /api/chat:
+    post:
+      summary: Send a message to the AI assistant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The user's message
+                conversation_id:
+                  type: string
+                  description: Optional conversation ID to continue existing conversation
+              required:
+                - message
+      responses:
+        '200':
+          description: Successful response from AI
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: AI's response to the message
+                  conversation_id:
+                    type: string
+                    description: ID of the conversation (new or existing)
+                  success:
+                    type: boolean
+                    description: Whether the request was successful
+        '400':
+          description: Bad request (missing message content)
+        '403':
+          description: Forbidden (access to conversation denied)
+  /api/chat/conversations:
+    get:
+      summary: Get all conversations for the current user
+      responses:
+        '200':
+          description: List of user's conversations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Conversation'
+                  count:
+                    type: integer
+                  success:
+                    type: boolean
+    post:
+      summary: Create a new conversation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Title for the new conversation
+      responses:
+        '200':
+          description: New conversation created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversation:
+                    $ref: '#/components/schemas/Conversation'
+                  success:
+                    type: boolean
+  /api/chat/conversations/{conversation_id}:
+    get:
+      summary: Get a specific conversation with its messages
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Conversation with messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversation:
+                    $ref: '#/components/schemas/Conversation'
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Message'
+                  success:
+                    type: boolean
+        '403':
+          description: Forbidden (access to conversation denied)
+components:
+  schemas:
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        is_active:
+          type: boolean
+    Message:
+      type: object
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
