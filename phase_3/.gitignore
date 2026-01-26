@@ -1,4 +1,5 @@
 node_modules/
+hakhathon/
 .npm_cache_temp/
 .env
 .DS_Store
