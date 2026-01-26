@@ -15,9 +15,7 @@
     "next": "14.0.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-hot-toast": "^2.6.0",
-    "@openai/assistant-ui-react": "^0.2.0",
-    "@openai/assistant-runtime": "^0.2.0"
+    "react-hot-toast": "^2.6.0"
   },
   "devDependencies": {
     "@types/react-dom": "^18.2.18",
