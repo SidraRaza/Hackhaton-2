@@ -10,6 +10,7 @@ dist/
 .next/
 __pycache__/
 *.pyc
+.backend_env
 .env.local
 .env.example
 .env.development.local
