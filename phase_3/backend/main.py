@@ -4,11 +4,13 @@ from contextlib import asynccontextmanager
 from sqlmodel import SQLModel
 from database import engine
 from routes import auth, tasks
+from app.api import chat
 from models.user import User
 from models.task import Task
 import os
 from dotenv import load_dotenv
 
+# Load environment variables
 load_dotenv()
 
 @asynccontextmanager
@@ -17,6 +19,9 @@ async def lifespan(app: FastAPI):
     print("Creating tables...")
     SQLModel.metadata.create_all(bind=engine)
     print("Tables created successfully!")
+
+    # Initialize MCP server if needed
+    # (In a real implementation, MCP would be initialized here)
     yield
 
 app = FastAPI(title="Todo App API", version="1.0.0", lifespan=lifespan)
@@ -33,6 +38,7 @@ app.add_middleware(
 # Include routers
 app.include_router(auth.router, prefix="/api")
 app.include_router(tasks.router, prefix="/api")
+app.include_router(chat.router, prefix="/api")
 
 @app.get("/")
 def read_root():

@@ -3,6 +3,12 @@ from typing import Generator
 import os
 from dotenv import load_dotenv
 
+# Import models to ensure they are registered with SQLModel
+from models.user import User
+from models.task import Task
+from models.conversation import Conversation
+from models.message import Message
+
 load_dotenv()
 
 # Database configuration
