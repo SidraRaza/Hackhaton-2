@@ -3,7 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from sqlmodel import SQLModel
 from database import engine
-from routes import auth, tasks
+from routes import auth
+from app.api import tasks, chat
 from app.api import chat
 from models.user import User
 from models.task import Task

@@ -1,6 +1,7 @@
 import { AuthProvider } from '../lib/auth';
 import { TasksProvider } from '../lib/tasks';
 import { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '../contexts/ThemeContext';
 import '../styles/globals.css';
 
 export default function RootLayout({
@@ -9,38 +10,41 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-gray-50 min-h-screen">
-        <AuthProvider>
-          <TasksProvider>
-            <div className="min-h-screen bg-gray-50">
-              {children}
-            </div>
-            <Toaster position="top-right" toastOptions={{
-              style: {
-                background: '#fff',
-                border: '1px solid #e5e7eb',
-                borderRadius: '0.5rem',
-                padding: '0.75rem',
-                color: '#1f2937',
-              },
-              success: {
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen bg-background antialiased">
+        <ThemeProvider>
+          <AuthProvider>
+            <TasksProvider>
+              <div className="min-h-screen bg-background">
+                {children}
+              </div>
+              <Toaster position="top-right" toastOptions={{
                 style: {
-                  background: '#f0fdf4',
-                  border: '1px solid #bbf7d0',
-                  color: '#166534',
+                  background: 'hsl(var(--background))',
+                  border: '1px solid hsl(var(--border))',
+                  borderRadius: 'var(--radius)',
+                  padding: '0.75rem',
+                  color: 'hsl(var(--foreground))',
+                  boxShadow: 'var(--radius)', // Reduced shadow
                 },
-              },
-              error: {
-                style: {
-                  background: '#fef2f2',
-                  border: '1px solid #fecaca',
-                  color: '#b91c1c',
+                success: {
+                  style: {
+                    background: 'hsl(var(--background))',
+                    border: '1px solid hsl(var(--border))',
+                    color: 'hsl(var(--primary))',
+                  },
                 },
-              },
-            }} />
-          </TasksProvider>
-        </AuthProvider>
+                error: {
+                  style: {
+                    background: 'hsl(var(--background))',
+                    border: '1px solid hsl(var(--destructive))',
+                    color: 'hsl(var(--destructive))',
+                  },
+                },
+              }} />
+            </TasksProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

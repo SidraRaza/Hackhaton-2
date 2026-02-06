@@ -1,0 +1,97 @@
+'use client';
+
+import React, { useState } from 'react';
+import Sidebar from '../../components/Sidebar';
+import TopNavbar from '../../components/TopNavbar';
+import { TaskCard } from '../../components/TaskCard';
+import { Button } from '../../components/ui/button';
+import { Plus } from 'lucide-react';
+import { TaskApiResponse } from '../../lib/types';
+
+// Mock data for today's tasks
+const mockTodayTasks: TaskApiResponse[] = [
+  {
+    id: '1',
+    title: 'Complete project proposal',
+    description: 'Finish the proposal document for the new client',
+    priority: 'high',
+    status: 'todo',
+    dueDate: new Date().toISOString().split('T')[0], // Today
+    createdAt: '2024-01-25T10:00:00Z',
+    updatedAt: '2024-01-25T10:00:00Z',
+  },
+  {
+    id: '2',
+    title: 'Team meeting',
+    description: 'Weekly team sync to discuss project progress',
+    priority: 'medium',
+    status: 'in-progress',
+    dueDate: new Date().toISOString().split('T')[0], // Today
+    createdAt: '2024-01-25T09:30:00Z',
+    updatedAt: '2024-01-25T09:30:00Z',
+  },
+];
+
+export default function TodayPage() {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [tasks, setTasks] = useState<TaskApiResponse[]>(mockTodayTasks);
+
+  const handleAddTask = () => {
+    // Mock adding a new task
+    const newTask: TaskApiResponse = {
+      id: (tasks.length + 1).toString(),
+      title: 'New task',
+      description: 'Description for new task',
+      priority: 'medium',
+      status: 'todo',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      dueDate: new Date().toISOString().split('T')[0], // Today
+    };
+    setTasks([...tasks, newTask]);
+  };
+
+  return (
+    <div className="flex min-h-screen">
+      {/* Sidebar */}
+      <Sidebar
+        isCollapsed={isSidebarCollapsed}
+        onCollapseToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
+
+      {/* Main content */}
+      <main className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
+        {/* Top Navbar */}
+        <TopNavbar
+          user={{
+            name: 'John Doe',
+            email: 'john@example.com',
+            avatar: '/placeholder-avatar.jpg',
+          }}
+        />
+
+        {/* Today's tasks content */}
+        <div className="p-6">
+          <div className="mb-6 flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-foreground">Today's Tasks</h1>
+            <Button onClick={handleAddTask}>
+              <Plus className="mr-2 h-4 w-4" /> Add Task
+            </Button>
+          </div>
+
+          {tasks.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <p>No tasks for today. Great job!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {tasks.map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}

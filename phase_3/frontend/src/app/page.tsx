@@ -1,50 +1,160 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import React, { useState, useEffect } from 'react';
+import Sidebar from '../components/Sidebar';
+import TopNavbar from '../components/TopNavbar';
+import { Button } from '../components/ui/button';
+import { Plus } from 'lucide-react';
+import { TaskApiResponse } from '../lib/types';
+import type { Task as TaskType } from '../lib/tasks';
+import { FloatingChatButton } from '../components/FloatingChatButton';
+import { ChatPanel } from '../components/ChatPanel';
+import TodoForm from '../components/TodoForm';
+import TodoList from '../components/TodoList';
+import { useTasks } from '../lib/tasks';
+import { useAuth } from '../lib/auth';
 
-export default function HomePage() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+type TodoFormData = Omit<
+  TaskType,
+  'id' | 'createdAt' | 'updatedAt' | 'completedAt' | 'userId'
+>;
+
+export default function DashboardPage() {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingTask, setEditingTask] = useState<TaskType | null>(null);
+
+  const { tasks, isLoading: loading, addTask, updateTask, deleteTask } = useTasks();
+
+  // ✅ CREATE
+  const handleAddTodo = async (data: TodoFormData) => {
+    try {
+      await addTask(data);
+      setShowAddForm(false);
+    } catch (error) {
+      console.error('Failed to add task:', error);
+    }
+  };
+
+  // ✅ UPDATE (merge form data with existing task)
+  const handleUpdateTodo = async (data: TodoFormData) => {
+    if (!editingTask) return;
+
+    try {
+      await updateTask(editingTask.id, data);
+      setEditingTask(null);
+    } catch (error) {
+      console.error('Failed to update task:', error);
+    }
+  };
+
+  const handleDeleteTodo = async (id: string) => {
+    try {
+      await deleteTask(id);
+    } catch (error) {
+      console.error('Failed to delete task:', error);
+    }
+  };
+
+  const handleToggleStatus = async (id: string, completed: boolean) => {
+    try {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      await updateTask(id, {
+        status: completed ? 'completed' : 'pending',
+      });
+    } catch (error) {
+      console.error('Failed to update status:', error);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden md:max-w-2xl border border-gray-100">
-        <div className="p-10">
-          <div className="text-center mb-8">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
+    <div className="flex min-h-screen bg-background">
+      <Sidebar
+        isCollapsed={isSidebarCollapsed}
+        onCollapseToggle={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
+
+      <main
+        className={`flex-1 transition-all duration-300 bg-background ${
+          isSidebarCollapsed ? 'ml-16' : 'ml-64'
+        }`}
+      >
+        <TopNavbar />
+
+        <div className="p-xl">
+          <div className="mb-lg flex justify-between items-center">
+            <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
+
+            {showAddForm ? (
+              <Button variant="outline" onClick={() => setShowAddForm(false)} className="bg-background text-foreground border-border hover:bg-muted">
+                Cancel
+              </Button>
+            ) : (
+              <Button
+                onClick={() => setShowAddForm(true)}
+                className="bg-primary text-primary-foreground hover:bg-primary/90"
+              >
+                <Plus className="mr-2 h-4 w-4" /> Add Task
+              </Button>
+            )}
+          </div>
+
+          {loading ? (
+            <div className="h-64 flex items-center justify-center bg-background rounded-lg border border-border">
+              Loading tasks...
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
-              Todo App
-            </h1>
-            <p className="text-gray-600 text-lg">Manage your tasks efficiently and boost productivity</p>
-          </div>
+          ) : (
+            <>
+              {showAddForm && !editingTask && (
+                <div className="mb-lg bg-background rounded-lg border border-border p-lg shadow-none">
+                  <TodoForm
+                    onSubmit={handleAddTodo}
+                    onCancel={() => setShowAddForm(false)}
+                    submitText="Add Task"
+                  />
+                </div>
+              )}
 
-          <div className="space-y-4">
-            <Link
-              href="/auth/login"
-              className="block w-full py-4 px-6 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-semibold rounded-xl transition-all duration-300 ease-in-out transform hover:-translate-y-0.5 shadow-lg hover:shadow-xl"
-            >
-              Sign In
-            </Link>
+              {editingTask && (
+                <div className="mb-lg bg-background rounded-lg border border-border p-lg shadow-none">
+                  <TodoForm
+                    onSubmit={handleUpdateTodo}
+                    onCancel={() => setEditingTask(null)}
+                    submitText="Update Task"
+                    defaultValue={{
+                      title: editingTask.title,
+                      description: editingTask.description ?? '',
+                      priority: editingTask.priority,
+                    }}
+                  />
+                </div>
+              )}
 
-            <Link
-              href="/auth/register"
-              className="block w-full py-4 px-6 bg-white border-2 border-indigo-100 hover:border-indigo-200 text-indigo-700 font-semibold rounded-xl transition-all duration-300 shadow-sm hover:shadow-md"
-            >
-              Create Account
-            </Link>
-          </div>
-
-          <div className="mt-8 text-center text-sm text-gray-500">
-            <p>Join thousands of users organizing their tasks</p>
-          </div>
+              <div className="bg-background rounded-lg border border-border p-lg shadow-none">
+                <TodoList
+                  todos={tasks}
+                  onEdit={setEditingTask}
+                  onDelete={handleDeleteTodo}
+                  onComplete={handleToggleStatus}
+                />
+              </div>
+            </>
+          )}
         </div>
-      </div>
+
+        <FloatingChatButton
+          isOpen={isChatOpen}
+          onToggle={() => setIsChatOpen(!isChatOpen)}
+        />
+
+        <ChatPanel
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+        />
+      </main>
     </div>
   );
 }

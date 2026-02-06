@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check if user is logged in on initial load
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('auth-token');
     if (token) {
       // Verify token and get user data
       fetchUser(token);
@@ -50,11 +50,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(userData);
       } else {
         // Token is invalid, remove it
-        localStorage.removeItem('token');
+        localStorage.removeItem('auth-token');
       }
     } catch (error) {
       console.error('Error fetching user:', error);
-      localStorage.removeItem('token');
+      localStorage.removeItem('auth-token');
     } finally {
       setLoading(false);
     }
@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { access_token, user } = data;
 
     // Store token in localStorage
-    localStorage.setItem('token', access_token);
+    localStorage.setItem('auth-token', access_token);
     setUser(user);
   };
 
@@ -100,12 +100,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { access_token, user } = data;
 
     // Store token in localStorage
-    localStorage.setItem('token', access_token);
+    localStorage.setItem('auth-token', access_token);
     setUser(user);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem('auth-token');
     setUser(null);
     router.push('/');
   };

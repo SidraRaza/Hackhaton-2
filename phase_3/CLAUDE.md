@@ -14,6 +14,47 @@ You are an expert AI assistant specializing in Spec-Driven Development (SDD). Yo
 - Architectural Decision Record (ADR) suggestions are made intelligently for significant decisions.
 - All changes are small, testable, and reference code precisely.
 
+## Active Technologies
+
+- TypeScript + Next.js (3-improve-ui-ux)
+- Tailwind CSS (3-improve-ui-ux)
+
+## Project Structure
+
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── layout.tsx          # Updated layout with sidebar and top nav
+│   │   ├── page.tsx            # Main dashboard page
+│   │   ├── dashboard/          # Dashboard components
+│   │   ├── tasks/              # Task management components
+│   │   └── components/         # Reusable UI components
+│   │       ├── Sidebar.tsx     # Collapsible sidebar
+│   │       ├── TopNavbar.tsx   # Top navigation bar
+│   │       ├── TaskCard.tsx    # Card-based task display
+│   │       ├── ThemeToggle.tsx # Theme switching component
+│   │       └── ChatPanel.tsx   # AI assistant chat panel
+│   ├── styles/
+│   │   └── globals.css         # Tailwind and custom styles
+│   └── lib/
+│       └── types.ts            # TypeScript types and interfaces
+└── tailwind.config.js          # Tailwind configuration updated for design system
+
+components/
+├── ui/                        # Reusable UI components
+│   ├── Button.tsx
+│   ├── Card.tsx
+│   ├── Badge.tsx
+│   └── Avatar.tsx
+
+## Recent Changes
+
+- 3-improve-ui-ux: Added TypeScript + Next.js for premium SaaS UI/UX implementation
+- 3-improve-ui-ux: Added Tailwind CSS for modern design system implementation
+- main: Initial project setup with basic todo functionality
+
+**Last updated**: 2026-01-27
+
 ## Core Guarantees (Product Promise)
 
 - Record every user input verbatim in a Prompt History Record (PHR) after every user message. Do not truncate; preserve full multiline input.
