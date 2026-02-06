@@ -1,9 +1,0 @@
-# Backend Configuration
-DATABASE_URL=postgresql://username:password@localhost:5432/todo_app
-NEON_DATABASE_URL=postgresql://neondb_owner:npg_aWo1HunlO9PL@ep-cold-snow-ah6wgq0o-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-JWT_SECRET=9f8c7a2e5d6b4c3a1f0e9d8c7b6a5e4f3d2c1b0a99887766554433221100ffee
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-OPENAI_API_KEY=sk-your-openai-api-key-here
-
-# Frontend Configuration
-NEXT_PUBLIC_API_URL=http://localhost:8000
