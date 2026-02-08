@@ -1,0 +1,62 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname', 'severity']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'default-receiver'
+  routes:
+    - matchers:
+        - severity="critical"
+      receiver: 'critical-team'
+      group_wait: 0s
+      repeat_interval: 30m
+    - matchers:
+        - severity="warning"
+      receiver: 'warning-team'
+      repeat_interval: 1h
+
+receivers:
+  - name: 'default-receiver'
+    email_configs:
+    - to: 'admin@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'localhost:25'
+      auth_username: 'alertmanager'
+      auth_password: 'password'
+    webhook_configs:
+    - url: 'http://slack-webhook-service:3000/hooks'
+    - url: 'http://pagerduty-webhook:3000/v2/enqueue'
+
+  - name: 'critical-team'
+    email_configs:
+    - to: 'critical-alerts@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'localhost:25'
+      auth_username: 'alertmanager'
+      auth_password: 'password'
+    webhook_configs:
+    - url: 'http://slack-webhook-service:3000/hooks/critical'
+      send_resolved: true
+    - url: 'http://pagerduty-webhook:3000/v2/enqueue'
+      send_resolved: true
+
+  - name: 'warning-team'
+    email_configs:
+    - to: 'ops@example.com'
+      from: 'alertmanager@example.com'
+      smarthost: 'localhost:25'
+      auth_username: 'alertmanager'
+      auth_password: 'password'
+    webhook_configs:
+    - url: 'http://slack-webhook-service:3000/hooks/warning'
+      send_resolved: true
+
+inhibit_rules:
+  - source_matchers:
+      - severity="critical"
+    target_matchers:
+      - severity="warning"
+    equal: ['alertname', 'cluster', 'service']

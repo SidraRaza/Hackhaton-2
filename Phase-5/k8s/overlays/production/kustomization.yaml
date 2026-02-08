@@ -1,0 +1,55 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+- ../../base
+
+patchesStrategicMerge:
+- deployment-production.yaml
+
+images:
+- name: todo-backend
+  newName: todo-backend
+  newTag: production-latest
+
+patches:
+- target:
+    kind: ConfigMap
+    name: todo-app-config
+  patch: |-
+    - op: replace
+      path: /data/TODO_APP_ENV
+      value: "production"
+
+- target:
+    kind: Deployment
+    name: todo-backend
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/containers/0/resources
+      value:
+        requests:
+          memory: "1Gi"
+          cpu: "500m"
+        limits:
+          memory: "2Gi"
+          cpu: "1000m"
+
+- target:
+    kind: HorizontalPodAutoscaler
+    name: todo-backend-hpa
+  patch: |-
+    - op: replace
+      path: /spec/minReplicas
+      value: 3
+    - op: replace
+      path: /spec/maxReplicas
+      value: 10
+
+- target:
+    kind: Service
+    name: todo-backend-service
+  patch: |-
+    - op: replace
+      path: /spec/type
+      value: LoadBalancer

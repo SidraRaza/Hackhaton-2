@@ -1,0 +1,16 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: postgresql-statestore
+spec:
+  type: state.postgresql
+  version: v1
+  metadata:
+  - name: connectionString
+    value: "{{ .Values.postgresql.connectionString | default \"postgresql://postgres:password@localhost:5432/postgres\" }}"
+  - name: tableName
+    value: "dapr_state_store"
+  - name: actorStateStore
+    value: "true"
+  - name: concurrency
+    value: "first-write"

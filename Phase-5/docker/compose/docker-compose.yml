@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  # This is the main compose file that references the dev compose
+  # For development, use: docker-compose -f docker-compose.dev.yml up
+  # For production, would reference a production compose file
+
+  # Placeholder service - actual services defined in environment-specific files
+  placeholder:
+    image: alpine:latest
+    command: ["echo", "Use docker-compose.dev.yml for development or docker-compose.prod.yml for production"]

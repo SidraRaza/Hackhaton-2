@@ -1,0 +1,538 @@
+asyncapi: 2.6.0
+info:
+  title: Todo App Event API
+  version: 1.0.0
+  description: Event-driven API for the Advanced Todo application
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+servers:
+  development:
+    url: localhost:9092
+    protocol: kafka
+    description: Local development Kafka
+  staging:
+    url: staging-kafka.todoapp.com:9092
+    protocol: kafka
+    description: Staging Kafka cluster
+  production:
+    url: prod-kafka.todoapp.com:9092
+    protocol: kafka
+    description: Production Kafka cluster
+
+channels:
+  task-events:
+    description: Channel for all task-related events
+    subscribe:
+      summary: Receive task events
+      operationId: receiveTaskEvents
+      message:
+        oneOf:
+          - $ref: '#/components/messages/TaskCreated'
+          - $ref: '#/components/messages/TaskUpdated'
+          - $ref: '#/components/messages/TaskCompleted'
+          - $ref: '#/components/messages/TaskDeleted'
+          - $ref: '#/components/messages/TaskRecurrenceCreated'
+    publish:
+      summary: Publish task events
+      operationId: publishTaskEvents
+      message:
+        oneOf:
+          - $ref: '#/components/messages/TaskCreated'
+          - $ref: '#/components/messages/TaskUpdated'
+          - $ref: '#/components/messages/TaskCompleted'
+          - $ref: '#/components/messages/TaskDeleted'
+          - $ref: '#/components/messages/TaskRecurrenceCreated'
+
+  user-events:
+    description: Channel for all user-related events
+    subscribe:
+      summary: Receive user events
+      operationId: receiveUserEvents
+      message:
+        oneOf:
+          - $ref: '#/components/messages/UserRegistered'
+          - $ref: '#/components/messages/UserLoggedIn'
+          - $ref: '#/components/messages/UserPreferencesUpdated'
+    publish:
+      summary: Publish user events
+      operationId: publishUserEvents
+      message:
+        oneOf:
+          - $ref: '#/components/messages/UserRegistered'
+          - $ref: '#/components/messages/UserLoggedIn'
+          - $ref: '#/components/messages/UserPreferencesUpdated'
+
+  system-events:
+    description: Channel for all system events
+    subscribe:
+      summary: Receive system events
+      operationId: receiveSystemEvents
+      message:
+        oneOf:
+          - $ref: '#/components/messages/ReminderTriggered'
+          - $ref: '#/components/messages/NotificationSent'
+          - $ref: '#/components/messages/AuditLogCreated'
+    publish:
+      summary: Publish system events
+      operationId: publishSystemEvents
+      message:
+        oneOf:
+          - $ref: '#/components/messages/ReminderTriggered'
+          - $ref: '#/components/messages/NotificationSent'
+          - $ref: '#/components/messages/AuditLogCreated'
+
+components:
+  messages:
+    TaskCreated:
+      name: task.created
+      title: Task Created Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TaskCreatedPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    TaskUpdated:
+      name: task.updated
+      title: Task Updated Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TaskUpdatedPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    TaskCompleted:
+      name: task.completed
+      title: Task Completed Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TaskCompletedPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    TaskDeleted:
+      name: task.deleted
+      title: Task Deleted Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TaskDeletedPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    TaskRecurrenceCreated:
+      name: task.recurrence_created
+      title: Task Recurrence Created Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TaskRecurrenceCreatedPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    UserRegistered:
+      name: user.registered
+      title: User Registered Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserRegisteredPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    UserLoggedIn:
+      name: user.logged_in
+      title: User Logged In Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserLoggedInPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    UserPreferencesUpdated:
+      name: user.preferences_updated
+      title: User Preferences Updated Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/UserPreferencesUpdatedPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    ReminderTriggered:
+      name: reminder.triggered
+      title: Reminder Triggered Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ReminderTriggeredPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    NotificationSent:
+      name: notification.sent
+      title: Notification Sent Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/NotificationSentPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+    AuditLogCreated:
+      name: audit.log_created
+      title: Audit Log Created Event
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/AuditLogCreatedPayload'
+      traits:
+        - $ref: '#/components/messageTraits/EventEnvelope'
+
+  schemas:
+    TaskCreatedPayload:
+      type: object
+      properties:
+        task_id:
+          type: integer
+          description: Unique identifier for the task
+        user_id:
+          type: string
+          description: ID of the user who created the task
+        title:
+          type: string
+          description: Title of the task
+          maxLength: 200
+        description:
+          type: string
+          description: Optional description of the task
+        priority:
+          type: string
+          enum: [low, medium, high]
+          description: Priority level of the task
+          default: medium
+        due_date:
+          type: string
+          format: date-time
+          description: Due date and time for the task
+        recurrence_pattern:
+          type: string
+          enum: [daily, weekly, monthly, yearly, custom]
+          description: Recurrence pattern if task is recurring
+        recurrence_config:
+          type: object
+          description: Configuration for recurrence pattern
+        tag_ids:
+          type: array
+          items:
+            type: integer
+          description: IDs of tags associated with the task
+        created_at:
+          type: string
+          format: date-time
+          description: When the task was created
+
+    TaskUpdatedPayload:
+      type: object
+      properties:
+        task_id:
+          type: integer
+          description: Unique identifier for the task
+        user_id:
+          type: string
+          description: ID of the user who updated the task
+        changes:
+          type: object
+          description: Dictionary of changed fields with old/new values
+        updated_fields:
+          type: array
+          items:
+            type: string
+          description: List of field names that were updated
+        updated_at:
+          type: string
+          format: date-time
+          description: When the task was updated
+
+    TaskCompletedPayload:
+      type: object
+      properties:
+        task_id:
+          type: integer
+          description: Unique identifier for the task
+        user_id:
+          type: string
+          description: ID of the user who completed the task
+        completed_at:
+          type: string
+          format: date-time
+          description: When the task was completed
+        was_recurring:
+          type: boolean
+          description: Whether the task was part of a recurring series
+        has_next_occurrence:
+          type: boolean
+          description: Whether the next occurrence will be created
+        next_occurrence_date:
+          type: string
+          format: date-time
+          description: Date of next occurrence if applicable
+
+    TaskDeletedPayload:
+      type: object
+      properties:
+        task_id:
+          type: integer
+          description: Unique identifier for the task
+        user_id:
+          type: string
+          description: ID of the user who deleted the task
+        deleted_at:
+          type: string
+          format: date-time
+          description: When the task was deleted
+
+    TaskRecurrenceCreatedPayload:
+      type: object
+      properties:
+        original_task_id:
+          type: integer
+          description: ID of the original recurring task template
+        new_task_id:
+          type: integer
+          description: ID of the new occurrence created
+        user_id:
+          type: string
+          description: ID of the user who owns the task
+        recurrence_sequence:
+          type: integer
+          description: Sequence number in the recurrence series
+        next_due_date:
+          type: string
+          format: date-time
+          description: Due date for the next occurrence
+
+    UserRegisteredPayload:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: Unique identifier for the user
+        email:
+          type: string
+          format: email
+          description: User's email address
+        name:
+          type: string
+          description: User's name
+        registration_method:
+          type: string
+          enum: [email, oauth, social]
+          description: Method used for registration
+          default: email
+        created_at:
+          type: string
+          format: date-time
+          description: When the user registered
+
+    UserLoggedInPayload:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: Unique identifier for the user
+        session_id:
+          type: string
+          description: Session identifier
+        ip_address:
+          type: string
+          description: IP address of the user
+        user_agent:
+          type: string
+          description: User agent string
+        login_time:
+          type: string
+          format: date-time
+          description: When the user logged in
+
+    UserPreferencesUpdatedPayload:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: Unique identifier for the user
+        preferences:
+          type: object
+          description: Updated user preferences
+        updated_fields:
+          type: array
+          items:
+            type: string
+          description: List of preference fields that were updated
+        updated_at:
+          type: string
+          format: date-time
+          description: When preferences were updated
+
+    ReminderTriggeredPayload:
+      type: object
+      properties:
+        task_id:
+          type: integer
+          description: ID of the task with the reminder
+        user_id:
+          type: string
+          description: ID of the user who owns the task
+        reminder_time:
+          type: string
+          format: date-time
+          description: When the reminder was triggered
+        notification_channel:
+          type: string
+          enum: [browser, email, sms, push]
+          description: Channel used for notification
+          default: browser
+        scheduled_time:
+          type: string
+          format: date-time
+          description: When the reminder was scheduled
+        actual_trigger_time:
+          type: string
+          format: date-time
+          description: When the reminder was actually triggered
+
+    NotificationSentPayload:
+      type: object
+      properties:
+        notification_id:
+          type: string
+          description: Unique identifier for the notification
+        user_id:
+          type: string
+          description: ID of the user receiving the notification
+        task_id:
+          type: integer
+          description: ID of the task related to the notification (optional)
+        channel:
+          type: string
+          enum: [browser, email, sms, push]
+          description: Channel used for notification
+        message:
+          type: string
+          description: Notification message content
+        sent_time:
+          type: string
+          format: date-time
+          description: When the notification was sent
+        success:
+          type: boolean
+          description: Whether the notification was sent successfully
+          default: true
+        retry_count:
+          type: integer
+          description: Number of retries attempted
+          default: 0
+
+    AuditLogCreatedPayload:
+      type: object
+      properties:
+        user_id:
+          type: string
+          description: ID of the user performing the action
+        action:
+          type: string
+          description: Type of action performed (create_task, update_task, etc.)
+        resource_type:
+          type: string
+          description: Type of resource acted upon (task, tag, user, etc.)
+        resource_id:
+          type: string
+          description: ID of the resource acted upon
+        action_details:
+          type: object
+          description: Additional details about the action
+        timestamp:
+          type: string
+          format: date-time
+          description: When the action occurred
+        ip_address:
+          type: string
+          description: IP address of the user
+        user_agent:
+          type: string
+          description: User agent string
+
+    EventEnvelope:
+      type: object
+      properties:
+        event_id:
+          type: string
+          format: uuid
+          description: Unique identifier for the event
+        event_type:
+          type: string
+          description: Type of the event
+        event_version:
+          type: string
+          description: Version of the event schema
+          default: '1.0'
+        timestamp:
+          type: string
+          format: date-time
+          description: When the event occurred
+        source:
+          type: string
+          description: Source service that generated the event
+        data:
+          type: object
+          description: Event-specific data payload
+        metadata:
+          $ref: '#/components/schemas/EventMetadata'
+        aggregate_type:
+          type: string
+          description: Type of aggregate (for event sourcing)
+        aggregate_id:
+          type: string
+          description: ID of aggregate (for event sourcing)
+
+    EventMetadata:
+      type: object
+      properties:
+        correlation_id:
+          type: string
+          format: uuid
+          description: ID to correlate related events
+        trace_id:
+          type: string
+          description: Trace ID for distributed tracing
+        user_id:
+          type: string
+          description: ID of the user who triggered the event
+        session_id:
+          type: string
+          description: Session ID for the user session
+        source_service:
+          type: string
+          description: Name of the service that generated the event
+        source_component:
+          type: string
+          description: Component within the service that generated the event
+        client_ip:
+          type: string
+          description: IP address of the client that initiated the action
+        user_agent:
+          type: string
+          description: User agent string of the client
+
+  messageTraits:
+    EventEnvelope:
+      headers:
+        type: object
+        properties:
+          "content-type":
+            type: string
+            enum: [application/json]
+          "x-event-type":
+            type: string
+            description: Event type in the header for routing
+          "x-correlation-id":
+            type: string
+            description: Correlation ID for tracing
+          "x-trace-id":
+            type: string
+            description: Trace ID for distributed tracing

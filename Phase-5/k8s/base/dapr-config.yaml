@@ -1,0 +1,66 @@
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: dapr-config
+spec:
+  tracing:
+    samplingRate: "1"
+    zipkin:
+      endpointAddress: "http://zipkin.default.svc.cluster.local:9411/api/v2/spans"
+  metric:
+    enabled: true
+  httpPipeline:
+    handlers: []
+  features:
+  - name: proxy
+    enabled: true
+  - name: serviceInvocation
+    enabled: true
+  - name: stateManagement
+    enabled: true
+  - name: pubsub
+    enabled: true
+  - name: bindings
+    enabled: true
+  - name: secretStores
+    enabled: true
+  - name: configuration
+    enabled: true
+  - name: actors
+    enabled: false
+  - name: inputBindings
+    enabled: true
+  - name: outputBindings
+    enabled: true
+  - name: middleware
+    enabled: true
+  - name: locking
+    enabled: true
+  - name: publish
+    enabled: true
+  - name: subscribe
+    enabled: true
+  - name: state
+    enabled: true
+  - name: secrets
+    enabled: true
+  - name: directMessaging
+    enabled: true
+  - name: invoke
+    enabled: true
+  - name: get
+    enabled: true
+  - name: set
+    enabled: true
+  - name: delete
+    enabled: true
+  - name: transactional
+    enabled: true
+  - name: query
+    enabled: true
+  - name: bulkPublish
+    enabled: true
+  - name: bulkGet
+    enabled: true
+  - name: bulkDelete
+    enabled: true

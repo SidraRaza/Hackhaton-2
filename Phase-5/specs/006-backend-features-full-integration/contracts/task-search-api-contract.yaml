@@ -1,0 +1,397 @@
+openapi: 3.0.0
+info:
+  title: Task Search and Advanced Features API
+  version: 1.0.0
+  description: API contract for task search, notifications, chat, and analytics features
+
+paths:
+  /api/tasks:
+    get:
+      summary: Get tasks with advanced search and filtering
+      parameters:
+        - name: search
+          in: query
+          description: Full text search term
+          schema:
+            type: string
+        - name: priority
+          in: query
+          description: Filter by priority levels (can be multiple)
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [low, medium, high]
+        - name: tags
+          in: query
+          description: Filter by tag IDs (can be multiple)
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: due_date_from
+          in: query
+          description: Filter tasks with due date after this date
+          schema:
+            type: string
+            format: date-time
+        - name: due_date_to
+          in: query
+          description: Filter tasks with due date before this date
+          schema:
+            type: string
+            format: date-time
+        - name: recurrence_pattern
+          in: query
+          description: Filter by recurrence pattern
+          schema:
+            type: string
+            enum: [daily, weekly, monthly, yearly, custom]
+        - name: status_filter
+          in: query
+          description: Filter by task completion status
+          schema:
+            type: string
+            enum: [pending, completed, all]
+            default: all
+        - name: sort
+          in: query
+          description: Primary sort field
+          schema:
+            type: string
+            enum: [priority, due_date, created_at, title, completed, relevance]
+            default: created_at
+        - name: sort_order
+          in: query
+          description: Primary sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: secondary_sort
+          in: query
+          description: Secondary sort field
+          schema:
+            type: string
+            enum: [priority, due_date, created_at, title, completed]
+            default: created_at
+        - name: secondary_sort_order
+          in: query
+          description: Secondary sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: limit
+          in: query
+          description: Pagination limit
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          description: Pagination offset
+          schema:
+            type: integer
+            default: 0
+        - name: use_saved_filters
+          in: query
+          description: Whether to use saved filter preferences
+          schema:
+            type: boolean
+        - name: save_filters
+          in: query
+          description: Whether to save current filters as preferences
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: List of tasks matching the search and filters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /api/tasks/search/suggestions:
+    get:
+      summary: Get search suggestions based on partial query
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Partial search query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of search suggestions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+
+  /api/notifications:
+    get:
+      summary: Get user's notifications
+      responses:
+        '200':
+          description: List of user's notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Notification'
+    post:
+      summary: Create a new notification (admin/system use)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notification'
+      responses:
+        '201':
+          description: Notification created successfully
+
+  /api/chat/conversations:
+    get:
+      summary: Get user's chat conversations
+      responses:
+        '200':
+          description: List of user's conversations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Conversation'
+    post:
+      summary: Create a new chat conversation
+      responses:
+        '201':
+          description: Conversation created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Conversation'
+
+  /api/chat/conversations/{conversation_id}/messages:
+    get:
+      summary: Get messages in a conversation
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          description: Conversation ID
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of messages in the conversation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessage'
+    post:
+      summary: Send a message in a conversation
+      parameters:
+        - name: conversation_id
+          in: path
+          required: true
+          description: Conversation ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The message content to send
+      responses:
+        '200':
+          description: Message sent and response received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  conversation_id:
+                    type: integer
+                  response:
+                    type: string
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /api/analytics/tasks:
+    get:
+      summary: Get task analytics for the user
+      parameters:
+        - name: period
+          in: query
+          description: Time period for analytics (week, month, quarter, year)
+          schema:
+            type: string
+            enum: [week, month, quarter, year]
+            default: month
+      responses:
+        '200':
+          description: Task analytics data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsData'
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        completed:
+          type: boolean
+        priority:
+          type: string
+          enum: [low, medium, high]
+        due_date:
+          type: string
+          format: date-time
+        recurrence_pattern:
+          type: string
+          enum: [daily, weekly, monthly, yearly, custom]
+        recurrence_config:
+          type: object
+        tag_ids:
+          type: array
+          items:
+            type: integer
+        next_occurrence:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [reminder, task_update, system, recurring_task]
+        title:
+          type: string
+        message:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        delivery_status:
+          type: string
+          enum: [sent, delivered, read]
+        user_id:
+          type: string
+        task_id:
+          type: integer
+        priority:
+          type: string
+          enum: [low, medium, high]
+
+    ChatMessage:
+      type: object
+      properties:
+        id:
+          type: string
+        conversation_id:
+          type: string
+        sender:
+          type: string
+          enum: [user, ai]
+        content:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [sending, sent, delivered, error]
+
+    Conversation:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        title:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        is_active:
+          type: boolean
+
+    AnalyticsData:
+      type: object
+      properties:
+        user_id:
+          type: string
+        period_start:
+          type: string
+          format: date-time
+        period_end:
+          type: string
+          format: date-time
+        task_completion_rate:
+          type: number
+          format: float
+        priority_distribution:
+          type: object
+          properties:
+            low:
+              type: number
+              format: float
+            medium:
+              type: number
+              format: float
+            high:
+              type: number
+              format: float
+        average_completion_time:
+          type: number
+          format: float
+        productivity_score:
+          type: number
+          format: float
+        recurring_completion_rate:
+          type: number
+          format: float
+        peak_productivity_hours:
+          type: array
+          items:
+            type: number

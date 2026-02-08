@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-app.fullname" . }}
+  labels:
+    {{- include "todo-app.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "todo-app.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.dapr.enabled }}
+        dapr.io/enabled: "true"
+        dapr.io/app-id: {{ .Values.dapr.appId | quote }}
+        dapr.io/app-port: {{ .Values.dapr.appPort | quote }}
+        dapr.io/config: {{ .Values.dapr.config | quote }}
+        dapr.io/log-level: {{ .Values.dapr.logLevel | quote }}
+        dapr.io/app-protocol: {{ .Values.dapr.appProtocol | quote }}
+        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "todo-app.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "todo-app.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "todo-app.fullname" . }}-secrets
+                  key: database-url
+            - name: KAFKA_BROKERS
+              value: {{ join "," .Values.externalServices.kafka.brokers | quote }}
+            - name: REDIS_URL
+              value: {{ printf "redis://%s:%d" .Values.externalServices.redis.host .Values.externalServices.redis.port | quote }}
+            - name: TODO_APP_ENV
+              value: {{ .Values.config.TODO_APP_ENV | quote }}
+            - name: DB_POOL_SIZE
+              value: {{ .Values.config.DB_POOL_SIZE | quote }}
+            - name: DB_MAX_OVERFLOW
+              value: {{ .Values.config.DB_MAX_OVERFLOW | quote }}
+            - name: DB_POOL_TIMEOUT
+              value: {{ .Values.config.DB_POOL_TIMEOUT | quote }}
+            - name: KAFKA_MESSAGE_MAX_BYTES
+              value: {{ .Values.config.KAFKA_MESSAGE_MAX_BYTES | quote }}
+            - name: KAFKA_FETCH_MAX_BYTES
+              value: {{ .Values.config.KAFKA_FETCH_MAX_BYTES | quote }}
+            - name: KAFKA_CONSUMER_SESSION_TIMEOUT_MS
+              value: {{ .Values.config.KAFKA_CONSUMER_SESSION_TIMEOUT_MS | quote }}
+            - name: DAPR_HTTP_MAX_REQUEST_SIZE
+              value: {{ .Values.config.DAPR_HTTP_MAX_REQUEST_SIZE | quote }}
+            - name: DAPR_GRACEFUL_SHUTDOWN_SECONDS
+              value: {{ .Values.config.DAPR_GRACEFUL_SHUTDOWN_SECONDS | quote }}
+            - name: TASK_RETENTION_DAYS
+              value: {{ .Values.config.TASK_RETENTION_DAYS | quote }}
+            - name: MAX_TASK_TITLE_LENGTH
+              value: {{ .Values.config.MAX_TASK_TITLE_LENGTH | quote }}
+            - name: MAX_TASK_DESCRIPTION_LENGTH
+              value: {{ .Values.config.MAX_TASK_DESCRIPTION_LENGTH | quote }}
+            - name: WORKER_COUNT
+              value: {{ .Values.config.WORKER_COUNT | quote }}
+            - name: WORKER_CONNECTIONS
+              value: {{ .Values.config.WORKER_CONNECTIONS | quote }}
+            - name: TIMEOUT_KEEP_ALIVE
+              value: {{ .Values.config.TIMEOUT_KEEP_ALIVE | quote }}
+            - name: TIMEOUT_GRACEFUL_SHUTDOWN
+              value: {{ .Values.config.TIMEOUT_GRACEFUL_SHUTDOWN | quote }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

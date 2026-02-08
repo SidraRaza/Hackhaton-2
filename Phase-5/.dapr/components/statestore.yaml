@@ -1,0 +1,19 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: postgresql-statestore
+  namespace: todo-app
+spec:
+  type: state.postgresql
+  version: v1
+  metadata:
+  - name: connectionString
+    secretKeyRef:
+      name: postgres-secret
+      key: connection-string
+  - name: versionColumnType
+    value: "version"
+  - name: metadataTableName
+    value: "dapr_metadata"
+  - name: actorStateStore
+    value: "true"

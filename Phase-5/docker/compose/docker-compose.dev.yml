@@ -1,0 +1,168 @@
+version: '3.8'
+
+services:
+  # Database - Neon PostgreSQL (using local for development)
+  postgres:
+    image: ankane/pgvector:v0.5.1
+    container_name: todo-postgres
+    environment:
+      POSTGRES_DB: todo_app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Event streaming - Redpanda (compatible with Kafka)
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v23.2.15
+    container_name: todo-redpanda
+    command:
+      - redpanda
+      - start
+      - --smp
+      - '1'
+      - --memory
+      - 1G
+      - --reserve-memory
+      - 0M
+      - --overprovisioned
+      - --node-id
+      - '0'
+      - --kafka-addr
+      - PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr
+      - PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
+    ports:
+      - "9092:9092"
+      - "9644:9644"
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "info"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Dapr runtime
+  dapr-placement:
+    image: daprio/placement:latest
+    container_name: dapr-placement
+    ports:
+      - "50005:50005"
+    command: ["./placement", "-port", "50005"]
+
+  # Backend service with Dapr sidecar
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/backend.Dockerfile
+    container_name: todo-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redpanda:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/todo_app
+      - KAFKA_BROKERS=redpanda:9092
+      - DAPR_HTTP_ENDPOINT=http://localhost:3500
+      - DAPR_GRPC_ENDPOINT=grpc://localhost:50001
+      - ENVIRONMENT=development
+    ports:
+      - "8000:8000"
+      - "3500:3500"  # Dapr HTTP port
+    volumes:
+      - ./backend:/app
+    command: [
+      "dapr", "run",
+      "--app-id", "todo-backend",
+      "--app-port", "8000",
+      "--dapr-http-port", "3500",
+      "--dapr-grpc-port", "50001",
+      "--config", "../.dapr/config.yaml",
+      "--components-path", "../.dapr/components",
+      "--", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"
+    ]
+
+  # Frontend service with Dapr sidecar
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../docker/frontend.Dockerfile
+    container_name: todo-frontend
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_DAPR_SIDECAR_HOST=localhost
+      - NEXT_PUBLIC_DAPR_HTTP_PORT=3501
+      - ENVIRONMENT=development
+    ports:
+      - "3000:3000"
+      - "3501:3501"  # Dapr HTTP port for frontend
+    volumes:
+      - ./frontend:/app
+    command: [
+      "dapr", "run",
+      "--app-id", "todo-frontend",
+      "--app-port", "3000",
+      "--dapr-http-port", "3501",
+      "--dapr-grpc-port", "50002",
+      "--config", "../.dapr/config.yaml",
+      "--components-path", "../.dapr/components",
+      "--", "npm", "run", "dev"
+    ]
+
+  # Redis for caching (if needed)
+  redis:
+    image: redis:7-alpine
+    container_name: todo-redis
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+
+  # Monitoring - Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: todo-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+
+  # Monitoring - Grafana
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: todo-grafana
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:

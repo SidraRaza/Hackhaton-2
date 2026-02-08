@@ -1,0 +1,200 @@
+/* Priority Styles for Task List */
+/* Color-coded priority indicators */
+
+.task-item {
+  transition: all 0.2s ease-in-out;
+  border-left-width: 4px;
+  border-left-style: solid;
+}
+
+.task-item.priority-low {
+  border-left-color: #10B981; /* green-500 */
+  background-color: #ECFDF5; /* green-50 */
+}
+
+.task-item.priority-low:hover {
+  background-color: #D1FAE5; /* green-100 */
+}
+
+.task-item.priority-medium {
+  border-left-color: #F59E0B; /* yellow-500 */
+  background-color: #FEFCE8; /* yellow-50 */
+}
+
+.task-item.priority-medium:hover {
+  background-color: #FEF9C3; /* yellow-100 */
+}
+
+.task-item.priority-high {
+  border-left-color: #EF4444; /* red-500 */
+  background-color: #FEF2F2; /* red-50 */
+}
+
+.task-item.priority-high:hover {
+  background-color: #FEE2E2; /* red-100 */
+}
+
+/* Priority indicator badges */
+.priority-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem; /* rounded-md */
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.priority-indicator.low {
+  background-color: #D1FAE5; /* green-100 */
+  color: #065F46; /* green-700 */
+}
+
+.priority-indicator.medium {
+  background-color: #FEF9C3; /* yellow-100 */
+  color: #713F12; /* yellow-700 */
+}
+
+.priority-indicator.high {
+  background-color: #FEE2E2; /* red-100 */
+  color: #7F1D1D; /* red-700 */
+}
+
+/* Priority selector component styles */
+.priority-selector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.priority-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px solid transparent;
+  border-radius: 0.5rem; /* rounded-lg */
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.priority-button.low {
+  background-color: #ECFDF5; /* green-50 */
+  color: #065F46; /* green-700 */
+}
+
+.priority-button.low:hover:not(:disabled) {
+  background-color: #D1FAE5; /* green-100 */
+}
+
+.priority-button.low.active {
+  border-color: #10B981; /* green-500 */
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1); /* green-500/10 */
+  transform: scale(1.05);
+}
+
+.priority-button.medium {
+  background-color: #FEFCE8; /* yellow-50 */
+  color: #713F12; /* yellow-700 */
+}
+
+.priority-button.medium:hover:not(:disabled) {
+  background-color: #FEF9C3; /* yellow-100 */
+}
+
+.priority-button.medium.active {
+  border-color: #F59E0B; /* yellow-500 */
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1); /* yellow-500/10 */
+  transform: scale(1.05);
+}
+
+.priority-button.high {
+  background-color: #FEF2F2; /* red-50 */
+  color: #7F1D1D; /* red-700 */
+}
+
+.priority-button.high:hover:not(:disabled) {
+  background-color: #FEE2E2; /* red-100 */
+}
+
+.priority-button.high.active {
+  border-color: #EF4444; /* red-500 */
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1); /* red-500/10 */
+  transform: scale(1.05);
+}
+
+.priority-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Priority icons */
+.priority-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.25rem;
+}
+
+.priority-icon.low {
+  color: #10B981; /* green-500 */
+}
+
+.priority-icon.medium {
+  color: #F59E0B; /* yellow-500 */
+}
+
+.priority-icon.high {
+  color: #EF4444; /* red-500 */
+}
+
+/* Priority filter panel */
+.priority-filter-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: #F9FAFB; /* gray-50 */
+  border-radius: 0.5rem; /* rounded-lg */
+  border: 1px solid #E5E7EB; /* gray-200 */
+}
+
+/* Priority-based sorting indicators */
+.sort-indicator.priority {
+  position: relative;
+  padding-right: 1.25rem;
+}
+
+.sort-indicator.priority::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+.sort-indicator.priority.asc::after {
+  border-bottom: 6px solid currentColor;
+}
+
+.sort-indicator.priority.desc::after {
+  border-top: 6px solid currentColor;
+}
+
+/* Responsive design for priority indicators */
+@media (max-width: 768px) {
+  .priority-indicator {
+    font-size: 0.65rem; /* smaller on mobile */
+    padding: 0.15rem 0.3rem;
+  }
+
+  .priority-button {
+    padding: 0.375rem 0.5rem;
+    font-size: 0.875rem;
+  }
+}

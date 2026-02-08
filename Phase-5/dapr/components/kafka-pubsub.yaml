@@ -1,0 +1,22 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: kafka-pubsub
+spec:
+  type: pubsub.kafka
+  version: v1
+  metadata:
+  - name: brokers
+    value: "{{ .Values.kafka.brokers | default \"localhost:9092\" }}"
+  - name: consumerGroup
+    value: "{{ .Values.kafka.consumerGroup | default \"dapr-consumer-group\" }}"
+  - name: authRequired
+    value: "false"
+  - name: saslUsername
+    value: ""
+  - name: saslPassword
+    value: ""
+  - name: initialOffset
+    value: "newest"
+  - name: version
+    value: "2.8.0"

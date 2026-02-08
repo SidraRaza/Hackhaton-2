@@ -1,0 +1,199 @@
+openapi: 3.0.0
+info:
+  title: Task Management API
+  version: 1.0.0
+  description: API contract for task management with advanced features
+
+paths:
+  /api/tasks:
+    get:
+      summary: Get tasks with advanced filtering and sorting
+      parameters:
+        - name: priority
+          in: query
+          description: Filter by priority levels
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [low, medium, high]
+        - name: tags
+          in: query
+          description: Filter by tag IDs
+          schema:
+            type: array
+            items:
+              type: integer
+        - name: search
+          in: query
+          description: Full text search in title/description
+          schema:
+            type: string
+        - name: due_date_from
+          in: query
+          description: Filter tasks with due date after this date
+          schema:
+            type: string
+            format: date-time
+        - name: due_date_to
+          in: query
+          description: Filter tasks with due date before this date
+          schema:
+            type: string
+            format: date-time
+        - name: recurrence_pattern
+          in: query
+          description: Filter by recurrence pattern
+          schema:
+            type: string
+            enum: [daily, weekly, monthly, yearly, custom]
+        - name: status_filter
+          in: query
+          description: Filter by task completion status
+          schema:
+            type: string
+            enum: [pending, completed, all]
+            default: all
+        - name: sort
+          in: query
+          description: Primary sort field
+          schema:
+            type: string
+            enum: [priority, due_date, created_at, title, completed]
+            default: created_at
+        - name: sort_order
+          in: query
+          description: Primary sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: secondary_sort
+          in: query
+          description: Secondary sort field
+          schema:
+            type: string
+            enum: [priority, due_date, created_at, title, completed]
+            default: created_at
+        - name: secondary_sort_order
+          in: query
+          description: Secondary sort order
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: limit
+          in: query
+          description: Pagination limit
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          description: Pagination offset
+          schema:
+            type: integer
+            default: 0
+        - name: use_saved_filters
+          in: query
+          description: Whether to use saved filter preferences
+          schema:
+            type: boolean
+        - name: save_filters
+          in: query
+          description: Whether to save current filters as preferences
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: List of tasks matching the filters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /api/tasks/{id}/complete-recurrence:
+    post:
+      summary: Complete recurring task with advanced options
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Task ID
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecurringTaskCompletionOptions'
+      responses:
+        '200':
+          description: Updated task after completion
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        completed:
+          type: boolean
+        priority:
+          type: string
+          enum: [low, medium, high]
+        due_date:
+          type: string
+          format: date-time
+        recurrence_pattern:
+          type: string
+          enum: [daily, weekly, monthly, yearly, custom]
+        recurrence_config:
+          type: object
+        tag_ids:
+          type: array
+          items:
+            type: integer
+        next_occurrence:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    RecurringTaskCompletionOptions:
+      type: object
+      properties:
+        mark_series_complete:
+          type: boolean
+          default: false
+        modify_future_occurrences:
+          type: boolean
+          default: false
+        skip_next_occurrence:
+          type: boolean
+          default: false
+        recurrence_action:
+          type: string
+          enum: [create_next, skip, end_series]
+          default: create_next
+        create_next_occurrence:
+          type: boolean
+          default: true

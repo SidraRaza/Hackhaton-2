@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, ''.''\\); from main import app; print\\(''✅ Backend imports successful''\\)\")",
+      "Bash(ls:*)",
+      "Bash(.specify/scripts/bash/update-agent-context.sh claude)",
+      "Bash(.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks)",
+      "Bash(find \"/mnt/d/Hackathon II \\(Todo App\\)/Phase-5/specs/001-advanced-cloud-deployment/\" -type f)",
+      "Bash(find \"/mnt/d/Hackathon II \\(Todo App\\)/Phase-5\" -name \"*.py\" -exec grep -l \"add_task\\\\|update_task\\\\|task.*completion\" {} ;)",
+      "Bash(tail -20 \"/mnt/d/Hackathon II \\(Todo App\\)/Phase-5/backend/services/task_service.py\")",
+      "Bash(wc -l \"/mnt/d/Hackathon II \\(Todo App\\)/Phase-5/backend/services/task_service.py\")",
+      "Bash(tail -n 30 \"/mnt/d/Hackathon II \\(Todo App\\)/Phase-5/backend/services/task_service.py\")",
+      "Bash(tail -30 \"/mnt/d/Hackathon II \\(Todo App\\)/Phase-5/backend/services/task_service.py\")",
+      "Bash(wc -l:*)",
+      "Bash(find:*)"
+    ]
+  }
+}

@@ -1,0 +1,142 @@
+# Default values for todo-app
+
+image:
+  repository: todo-backend
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: LoadBalancer
+  port: 80
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+  hosts:
+    - host: todo-app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: todo-app-tls
+      hosts:
+        - todo-app.example.com
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Dapr configuration
+dapr:
+  enabled: true
+  appId: "todo-backend"
+  appPort: 8000
+  config: "dapr-config"
+  logLevel: "info"
+  appProtocol: "http"
+
+# External service configurations
+externalServices:
+  database:
+    host: "postgres-service"
+    port: 5432
+    name: "todo_app_db"
+    sslmode: "require"
+  kafka:
+    brokers:
+      - "kafka-service:9092"
+  redis:
+    host: "redis-service"
+    port: 6379
+
+# Application configuration
+config:
+  TODO_APP_ENV: "production"
+  DB_POOL_SIZE: "20"
+  DB_MAX_OVERFLOW: "30"
+  DB_POOL_TIMEOUT: "30"
+  KAFKA_MESSAGE_MAX_BYTES: "1048576"
+  KAFKA_FETCH_MAX_BYTES: "52428800"
+  KAFKA_CONSUMER_SESSION_TIMEOUT_MS: "30000"
+  DAPR_HTTP_MAX_REQUEST_SIZE: "4"
+  DAPR_GRACEFUL_SHUTDOWN_SECONDS: "5"
+  TASK_RETENTION_DAYS: "30"
+  MAX_TASK_TITLE_LENGTH: "200"
+  MAX_TASK_DESCRIPTION_LENGTH: "1000"
+  WORKER_COUNT: "4"
+  WORKER_CONNECTIONS: "1000"
+  TIMEOUT_KEEP_ALIVE: "5"
+  TIMEOUT_GRACEFUL_SHUTDOWN: "30"
+
+# Sub-chart configurations
+postgresql:
+  enabled: true
+  auth:
+    username: "postgres"
+    password: "changeme"
+    database: "todo_app_db"
+  architecture: standalone
+  primary:
+    persistence:
+      enabled: true
+      size: 10Gi
+
+kafka:
+  enabled: true
+  replicaCount: 1
+  zookeeper:
+    enabled: true
+  config:
+    offsets.topic.replication.factor: 1
+    transaction.state.replication.factor: 1
+    default.replication.factor: 1
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false

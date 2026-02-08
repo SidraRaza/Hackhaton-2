@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- deployment.yaml
+- service-account.yaml
+- configmap.yaml
+- secrets.yaml
+- ingress.yaml
+- database.yaml
+- hpa.yaml
+- dapr-config.yaml
+
+namespace: default
+
+images:
+- name: todo-backend
+  newName: todo-backend
+  newTag: latest
+
+commonLabels:
+  app: todo-app
+  version: v1.0.0
+
+commonAnnotations:
+  deployment.kubernetes.io/revision: "1"
+  dapr.io/app-id: "todo-backend"
+  dapr.io/app-port: "8000"
+  dapr.io/enabled: "true"
