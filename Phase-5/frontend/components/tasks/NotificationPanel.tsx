@@ -15,7 +15,7 @@ export const NotificationPanel = ({
 }: NotificationPanelProps) => {
   // Construct WebSocket URL based on API URL
   const getWebSocketUrl = () => {
-    const apiUrl = process.env.NEXT_PUBLIC_TODO_API_URL || 'https://ahmed-raza-backend-phase-5.hf.space';
+    const apiUrl = process.env.NEXT_PUBLIC_TODO_API_URL || ' ahmed-raza-backend-phase-5.hf.space';
     
     // Convert HTTP URL to WebSocket URL
     const wsUrl = apiUrl

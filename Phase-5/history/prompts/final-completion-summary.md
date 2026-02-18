@@ -7,7 +7,7 @@ surface: 100
 model: claude-sonnet-4-5-20250929
 feature: advanced-cloud-deployment
 branch: 005-backend-frontend-integration
-user: ahmed
+user: sidra
 command: final-completion-summary
 labels: [advanced-cloud-deployment, dapr, event-driven, kubernetes, kafka, monitoring, cicd]
 links:

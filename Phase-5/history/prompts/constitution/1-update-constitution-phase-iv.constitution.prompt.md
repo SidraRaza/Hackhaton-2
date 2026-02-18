@@ -7,7 +7,7 @@ surface: agent
 model: qwen-2.5-72b-instruct
 feature: none
 branch: main
-user: ahmed
+user: sidra
 command: /sp.constitution
 labels: [constitution, phase-iv, kubernetes, deployment]
 links:

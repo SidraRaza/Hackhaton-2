@@ -7,7 +7,7 @@ surface: 100
 model: claude-sonnet-4-5-20250929
 feature: backend-frontend-integration
 branch: 005-backend-frontend-integration
-user: ahmed
+user: sidra
 command: /sp.plan
 labels: [dapr, integration, frontend, backend, event-driven]
 links:

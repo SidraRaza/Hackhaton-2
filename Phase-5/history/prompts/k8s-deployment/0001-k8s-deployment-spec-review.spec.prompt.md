@@ -7,7 +7,7 @@ surface: agent
 model: qwen-2.5-72b-instruct
 feature: k8s-deployment
 branch: 001-k8s-deployment
-user: Ahmed Raza
+user: Sidra Raza
 command: /sp.phr
 labels: ["k8s", "deployment", "specification", "validation", "containerization"]
 links:

@@ -7,7 +7,7 @@ surface: agent
 model: qwen-2.5-72b-instruct
 feature: k8s-deployment
 branch: 001-k8s-deployment
-user: ahmed
+user: sidra
 command: /sp.plan
 labels: [kubernetes, deployment, docker, minikube, helm, architecture]
 links:

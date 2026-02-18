@@ -1,5 +1,5 @@
 // API Client for making authenticated requests
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://ahmed-raza-backend-phase-5.hf.space/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ' ahmed-raza-backend-phase-5.hf.space/api';
 
 class ApiClient {
   private token: string | null = null;

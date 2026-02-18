@@ -7,7 +7,7 @@ surface: Implement all backend features into frontend
 model: claude-sonnet-4-5-20250929
 feature: backend-features-full-integration
 branch: 006-backend-features-full-integration
-user: ahmed
+user: sidra
 command: /sp.specify
 labels: [specification, backend, frontend, integration, search, notifications, ai-chat, analytics]
 links:

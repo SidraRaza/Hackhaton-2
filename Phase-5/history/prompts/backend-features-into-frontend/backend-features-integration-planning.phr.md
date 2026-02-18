@@ -7,7 +7,7 @@ surface: Plan implementation of backend features into frontend
 model: claude-sonnet-4-5-20250929
 feature: backend-features-into-frontend
 branch: 001-backend-features-into-frontend
-user: ahmed
+user: sidra
 command: /sp.plan
 labels: [planning, backend, frontend, integration]
 links:

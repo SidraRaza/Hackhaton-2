@@ -7,7 +7,7 @@ surface: Generate tasks for backend features integration
 model: claude-sonnet-4-5-20250929
 feature: backend-features-full-integration
 branch: 006-backend-features-full-integration
-user: ahmed
+user: sidra
 command: /sp.tasks
 labels: [tasks, backend, frontend, integration, search, notifications, ai-chat, analytics]
 links:
